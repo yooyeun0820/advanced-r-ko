@@ -1,0 +1,421 @@
+---
+title: "디버깅"
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-location: right
+    toc-depth: 3
+    number-sections: true
+    smooth-scroll: true
+    code-fold: show
+
+lang: ko
+editor: visual
+
+execute:
+  echo: true
+  warning: false
+  message: false
+  eval: false
+---
+
+```{r setup, include = FALSE}
+source("common.R")
+```
+
+## 소개
+
+\index{디버깅} \index{버그|see {디버깅}} \index{오류!디버깅}
+
+R 코드에서 예기치 않은 오류가 발생하면 어떻게 해야 할까요? 문제를 찾고 수정하기 위한 도구에는 어떤 것들이 있을까요? 이 장에서는 디버깅의 기술과 과학을 가르쳐드릴 것입니다. 전반적인 전략부터 시작하여 구체적인 도구들을 살펴보겠습니다.
+
+R과 RStudio IDE에서 제공하는 도구들을 모두 소개합니다. 가능하다면 RStudio의 도구를 사용하길 권장하지만, 어디서든 작동하는 동등한 방법도 함께 보여드리겠습니다. 또한 공식 [RStudio 디버깅 문서](https://support.rstudio.com/hc/en-us/articles/205612627-Debugging-with-RStudio)를 참고하시면 좋습니다. 이 문서는 항상 최신 버전의 RStudio를 반영합니다.
+
+참고: *새로운* 함수를 작성할 때 이러한 도구들을 사용할 필요는 없습니다. 새 코드 작성 중 이 도구들을 자주 사용하게 된다면 접근 방식을 재고해보시기 바랍니다. 한꺼번에 하나의 큰 함수를 작성하려 하지 말고, 작은 단위로 나눠서 대화형으로 작업하세요. 작게 시작하면 무엇이 잘못되었는지 빠르게 파악할 수 있으며, 정교한 디버깅 도구가 필요하지 않습니다.
+
+### 목차 {.unnumbered}
+
+-   섹션 \@ref(debugging-strategy)에서는 오류를 찾고 수정하기 위한 전반적인 전략을 설명합니다.
+
+-   섹션 \@ref(traceback)에서는 `traceback()` 함수를 소개합니다. 이 함수는 오류가 정확히 어디서 발생했는지 파악하는 데 도움이 됩니다.
+
+-   섹션 \@ref(browser)에서는 함수 실행을 일시 중지하고 현재 상태를 대화형으로 탐색할 수 있는 환경을 실행하는 방법을 보여줍니다.
+
+-   섹션 \@ref(non-interactive-debugging)에서는 코드를 비대화형으로 실행할 때의 까다로운 디버깅 문제를 다룹니다.
+
+-   섹션 \@ref(non-error-failures)에서는 간혹 디버깅이 필요한 오류가 아닌 몇 가지 실패 유형을 다룹니다.
+
+## 전반적인 접근 방식 {#debugging-strategy}
+
+> 버그를 찾는 것은 자신이 옳다고 믿는 많은 것들을 하나씩 확인해 나가다가 — 옳지 않은 하나를 발견하는 과정입니다.
+>
+> ---Norm Matloff
+
+문제의 근본 원인을 찾는 것은 항상 어렵습니다. 대부분의 버그는 미묘하고 찾기 어렵습니다. 만약 명백했다면 처음부터 피했을 것이기 때문입니다. 좋은 전략이 도움이 됩니다. 아래에 제가 유용하다고 생각하는 네 단계 프로세스를 설명합니다.
+
+1.  **구글링!**
+
+    오류 메시지가 나타나면 먼저 구글에서 검색하세요. 운이 좋다면 알려진 해결책이 있는 흔한 오류임을 알게 될 것입니다. 구글링할 때, 문제에 특정한 변수명이나 값을 제거하면 좋은 결과를 찾을 가능성이 높아집니다.
+
+    errorist [@errorist]와 searcher [@searcher] 패키지를 사용하여 이 과정을 자동화할 수 있습니다. 자세한 내용은 각 패키지의 웹사이트를 참조하세요.
+
+2.  **재현 가능하게 만들기**
+
+    오류의 근본 원인을 찾으려면 가설을 세우고 검증하면서 코드를 여러 번 실행해야 합니다. 그 반복을 최대한 빠르게 하려면, 문제를 쉽고 빠르게 재현할 수 있도록 사전에 투자할 가치가 있습니다.
+
+    먼저 재현 가능한 예제를 만드세요 (섹션 \@ref(getting-help)). 그다음 코드를 제거하고 데이터를 단순화하여 예제를 최소화하세요. 이 과정에서 오류를 유발하지 않는 입력값을 발견할 수도 있습니다. 이를 기록해 두세요. 근본 원인을 진단할 때 유용합니다.
+
+    자동화된 테스트를 사용 중이라면, 지금이 자동화된 테스트 케이스를 만들기에 좋은 시점입니다. 기존 테스트 커버리지가 낮다면 이 기회에 주변 테스트를 몇 가지 추가하여 기존의 올바른 동작이 유지되는지 확인하세요. 이렇게 하면 새로운 버그를 만들 가능성이 줄어듭니다.
+
+3.  **위치 파악하기**
+
+    운이 좋다면 다음 섹션의 도구 중 하나가 버그를 일으키는 코드 줄을 빠르게 찾아줄 것입니다. 하지만 대개는 문제에 대해 좀 더 생각해야 합니다. 과학적 방법을 채택하는 것이 좋습니다. 가설을 세우고, 이를 테스트할 실험을 설계하고, 결과를 기록하세요. 많은 작업처럼 보일 수 있지만, 체계적인 접근이 결국 시간을 절약해줍니다. 저는 종종 직관에만 의존하다 많은 시간을 낭비하곤 했습니다("아, 오프바이원 오류겠지, 여기서 1을 빼면 되겠다"처럼), 체계적인 접근이 더 나았을 텐데 말이죠.
+
+    이래도 해결이 안 된다면 다른 사람에게 도움을 요청해야 할 수도 있습니다. 이전 단계를 따랐다면, 다른 사람과 쉽게 공유할 수 있는 작은 예제가 있을 것입니다. 그러면 다른 사람이 문제를 보고 해결책을 찾아주기가 훨씬 쉬워집니다.
+
+4.  **수정하고 테스트하기**
+
+    버그를 찾으면 어떻게 수정할지 파악하고 수정이 제대로 작동하는지 확인해야 합니다. 자동화된 테스트가 있으면 매우 유용합니다. 버그를 실제로 수정했는지 확인하는 데 도움이 될 뿐만 아니라, 과정에서 새로운 버그가 생기지 않았는지도 확인해줍니다. 자동화된 테스트가 없다면, 올바른 출력값을 신중하게 기록하고 이전에 실패했던 입력값에 대해 확인하세요.
+
+## 오류 위치 파악 {#traceback}
+
+\index{호출 스택} \indexc{traceback()}
+
+오류를 재현 가능하게 만들었으면, 다음 단계는 오류가 어디서 발생했는지 파악하는 것입니다. 이 과정에서 가장 중요한 도구는 `traceback()`으로, 오류로 이어지는 호출 순서(호출 스택이라고도 함, 섹션 \@ref(call-stack))를 보여줍니다.
+
+간단한 예제를 살펴봅시다. `f()`가 `g()`를 호출하고, `g()`가 `h()`를 호출하고, `h()`가 인수가 숫자인지 확인하는 `i()`를 호출하는 것을 볼 수 있습니다.
+
+`{#{r, code = readLines("debugging.R"), error = TRUE}`
+
+```{r, include = FALSE}
+#source("debugging.R")
+```
+
+RStudio에서 `f("a")` 코드를 실행하면 다음을 볼 수 있습니다:
+
+```{r, echo = FALSE, out.width = "100%"}
+#knitr::include_graphics("screenshots/debugging/rstudio-error.png")
+```
+
+오류 메시지 오른쪽에 "Show Traceback"과 "Rerun with Debug" 두 가지 옵션이 나타납니다. "Show traceback"을 클릭하면 다음을 볼 수 있습니다:
+
+```{r, echo = FALSE, out.width = "100%"}
+#knitr::include_graphics("screenshots/debugging/rstudio-traceback.png")
+```
+
+RStudio를 사용하지 않는 경우, `traceback()`을 사용하여 동일한 정보를 얻을 수 있습니다(예쁜 형식 없이):
+
+```{r, eval = FALSE}
+traceback()
+#> 5: stop("`d` must be numeric", call. = FALSE) at debugging.R#6
+#> 4: i(c) at debugging.R#3
+#> 3: h(b) at debugging.R#2
+#> 2: g(a) at debugging.R#1
+#> 1: f("a")
+```
+
+참고: `traceback()` 출력은 아래에서 위로 읽습니다. 초기 호출은 `f()`이고, `g()`, `h()`, `i()`를 차례로 호출하며 `i()`에서 오류가 발생합니다. `source()`로 R에 불러온 코드를 호출하는 경우, traceback에는 `filename.r#linenumber` 형식으로 함수 위치도 표시됩니다. RStudio에서는 클릭 가능하며, 에디터의 해당 코드 줄로 이동합니다.
+
+### 지연 평가 {#debug-lazy}
+
+\indexc{last\_trace()}
+
+`traceback()`의 한 가지 단점은 호출 트리를 항상 선형화한다는 것입니다. 지연 평가가 많이 관여된 경우(섹션 \@ref(lazy-call-stack)) 혼란스러울 수 있습니다. 예를 들어, `f()`의 첫 번째 인수를 평가할 때 오류가 발생하는 다음 예제를 살펴보세요:
+
+```{r, error = TRUE}
+j <- function() k()
+k <- function() stop("이런!", call. = FALSE)
+f(j())
+```
+
+```{r, eval = FALSE}
+traceback()
+#> 7: stop("Oops!") at #1
+#> 6: k() at #1
+#> 5: j() at debugging.R#1
+#> 4: i(c) at debugging.R#3
+#> 3: h(b) at debugging.R#2
+#> 2: g(a) at debugging.R#1
+#> 1: f(j())
+```
+
+`rlang::with_abort()`와 `rlang::last_trace()`를 사용하면 호출 트리를 볼 수 있습니다. 이 경우 문제의 원인을 훨씬 쉽게 파악할 수 있습니다. 호출 트리의 마지막 분기를 보면 `j()`가 `k()`를 호출하여 오류가 발생함을 알 수 있습니다.
+
+```{r, error = TRUE}
+rlang::with_abort(f(j()))
+rlang::last_trace()
+```
+
+참고: `rlang::last_trace()`는 `traceback()`과 반대 순서로 정렬됩니다. 이 문제는 섹션 \@ref(call-stack-ordering)에서 다시 살펴보겠습니다.
+
+## 대화형 디버거 {#browser}
+
+\index{디버깅!대화형} \indexc{browser()}
+
+때로는 오류의 정확한 위치만으로도 문제를 추적하고 수정하기에 충분합니다. 그러나 종종 더 많은 정보가 필요하며, 가장 쉬운 방법은 대화형 디버거를 사용하는 것입니다. 대화형 디버거는 함수 실행을 일시 중지하고 현재 상태를 대화형으로 탐색할 수 있게 해줍니다.
+
+RStudio를 사용하는 경우, 대화형 디버거에 진입하는 가장 쉬운 방법은 RStudio의 "Rerun with Debug" 도구를 사용하는 것입니다. 이 도구는 오류를 생성한 명령을 재실행하여 오류가 발생한 위치에서 실행을 일시 중지합니다. 그렇지 않으면 일시 중지하려는 위치에 `browser()` 호출을 삽입하고 함수를 재실행할 수 있습니다. 예를 들어, `g()`에 `browser()` 호출을 삽입할 수 있습니다:
+
+```{r, eval = FALSE}
+g <- function(b) {
+  browser()
+  h(b)
+}
+f(10)
+```
+
+`browser()`는 일반 함수 호출이므로 `if` 문으로 감싸서 조건부로 실행할 수 있습니다:
+
+```{r, eval = FALSE}
+g <- function(b) {
+  if (b < 0) {
+    browser()
+  }
+  h(b)
+}
+```
+
+어떤 경우든 임의의 R 코드를 실행하여 현재 상태를 탐색할 수 있는 함수 \_내부_의 대화형 환경에 놓이게 됩니다. 다음과 같은 특수 프롬프트가 나타나면 대화형 디버거에 있다는 것을 알 수 있습니다:
+
+```         
+Browse[1]> 
+```
+
+RStudio에서는 에디터에서 해당 코드(다음에 실행될 명령문이 강조 표시됨)를 볼 수 있고, Environment 창에서 현재 환경의 객체들을, Traceback 창에서 호출 스택을 볼 수 있습니다.
+
+### `browser()` 명령어
+
+`browser()`는 일반 R 코드를 실행할 수 있게 해줄 뿐만 아니라 몇 가지 특수 명령어도 제공합니다. 짧은 텍스트 명령을 입력하거나 RStudio 툴바의 버튼을 클릭하여 사용할 수 있습니다, 그림 \@ref(fig:debug-toolbar):
+
+```{r debug-toolbar, echo = FALSE, out.width = "50%", fig.cap = "RStudio 디버깅 툴바"}
+#knitr::include_graphics("screenshots/debug-toolbar.png")
+```
+
+-   다음(Next), `n`: 함수의 다음 단계를 실행합니다. `n`이라는 변수가 있다면 값을 표시하려면 `print(n)`이 필요합니다.
+
+-   스텝 인(Step into), ![](screenshots/step-into.png){width="20"} 또는 `s`: 다음과 같이 작동하지만 다음 단계가 함수인 경우 해당 함수로 진입하여 대화형으로 탐색할 수 있습니다.
+
+-   완료(Finish), ![](screenshots/finish-loop.png){width="20"} 또는 `f`: 현재 루프 또는 함수의 실행을 완료합니다.
+
+-   계속(Continue), `c`: 대화형 디버깅을 종료하고 함수의 일반 실행을 계속합니다. 잘못된 상태를 수정하고 함수가 올바르게 진행되는지 확인하고 싶을 때 유용합니다.
+
+-   중지(Stop), `Q`: 디버깅을 중지하고 함수를 종료하며 전역 작업 공간으로 돌아갑니다. 문제의 위치를 파악하고 코드를 수정하고 다시 로드할 준비가 되었을 때 사용하세요.
+
+툴바에서 사용할 수 없는 덜 유용한 두 가지 명령어도 있습니다:
+
+-   Enter: 이전 명령을 반복합니다. 실수로 활성화하기 너무 쉬워서 `options(browserNLdisabled = TRUE)`로 비활성화합니다. \index{options!browserNLdisabled@\texttt{browserNLdisabled}}
+
+-   `where`: 활성 호출의 스택 추적을 출력합니다(`traceback`의 대화형 버전).
+
+### 대안
+
+`browser()` 사용에 대한 세 가지 대안이 있습니다: RStudio에서 중단점 설정, `options(error = recover)`, `debug()` 및 관련 함수들.
+
+#### 중단점 (Breakpoints)
+
+\index{중단점}
+
+RStudio에서는 줄 번호 왼쪽을 클릭하거나 `Shift + F9`를 눌러 중단점을 설정할 수 있습니다. 중단점은 `browser()`와 유사하게 동작하지만 설정이 더 쉽고(아홉 번의 키 입력 대신 한 번의 클릭), 소스 코드에 실수로 `browser()` 문이 포함될 위험이 없습니다. 중단점에는 두 가지 작은 단점이 있습니다:
+
+-   중단점이 작동하지 않는 몇 가지 특이한 상황이 있습니다. 자세한 내용은 [중단점 문제 해결](http://www.rstudio.com/ide/docs/debugging/breakpoint-troubleshooting)을 참조하세요.
+
+-   RStudio는 현재 조건부 중단점을 지원하지 않습니다.
+
+#### `recover()`
+
+\index{options!error@\texttt{error}} \indexc{recover()}
+
+`browser()`를 활성화하는 또 다른 방법은 `options(error = recover)`를 사용하는 것입니다. 이제 오류가 발생하면 traceback을 표시하고 모든 프레임 내에서 대화형으로 디버깅할 수 있는 대화형 프롬프트가 나타납니다:
+
+```{r, eval = FALSE}
+options(error = recover)
+f("x")
+#> Error: `d` must be numeric
+#> 
+#> Enter a frame number, or 0 to exit   
+#> 
+#> 1: f("x")
+#> 2: debugging.R#1: g(a)
+#> 3: debugging.R#2: h(b)
+#> 4: debugging.R#3: i(c)
+#> 
+#> Selection:
+```
+
+`options(error = NULL)`로 기본 오류 처리로 돌아갈 수 있습니다.
+
+#### `debug()`
+
+\indexc{debug()}
+\indexc{trace()}
+\indexc{setBreakpoint()}
+
+또 다른 접근법은 `browser()` 호출을 삽입해주는 함수를 호출하는 것입니다:
+
+-   `debug()`는 지정된 함수의 첫 번째 줄에 browser 문을 삽입합니다. `undebug()`는 이를 제거합니다. 대안으로, `debugonce()`를 사용하여 다음 실행 시에만 탐색할 수 있습니다.
+
+-   `utils::setBreakpoint()`는 유사하게 작동하지만 함수 이름 대신 파일 이름과 줄 번호를 입력받아 적절한 함수를 찾아줍니다.
+
+이 두 함수는 모두 기존 함수의 임의 위치에 임의의 코드를 삽입하는 `trace()`의 특수 케이스입니다. `trace()`는 소스가 없는 코드를 디버깅할 때 가끔 유용합니다. 함수에서 추적을 제거하려면 `untrace()`를 사용하세요. 함수당 하나의 추적만 수행할 수 있지만, 그 하나의 추적은 여러 함수를 호출할 수 있습니다.
+
+#### 호출 스택 {#call-stack-ordering}
+
+\index{호출 스택}
+
+안타깝게도 `traceback()`, `browser()` & `where`, `recover()`로 출력되는 호출 스택은 일관성이 없습니다. 다음 표는 간단한 중첩 호출 세트의 호출 스택이 세 가지 도구에 의해 어떻게 표시되는지 보여줍니다. `traceback()`과 `where` 사이에 번호 매기기가 다르며, `recover()`는 호출을 반대 순서로 표시합니다.
+
+| `traceback()`    | `where`           | `recover()` | rlang 함수                  |
+|:-----------------|:------------------|:------------|:----------------------------|
+| `5: stop("...")` |                   |             |                             |
+| `4: i(c)`        | `where 1: i(c)`   | `1: f()`    | `1. └─global::f(10)`        |
+| `3: h(b)`        | `where 2: h(b)`   | `2: g(a)`   | `2.   └─global::g(a)`       |
+| `2: g(a)`        | `where 3: g(a)`   | `3: h(b)`   | `3.     └─global::h(b)`     |
+| `1: f("a")`      | `where 4: f("a")` | `4: i("a")` | `4.       └─global::i("a")` |
+
+RStudio는 `traceback()`과 같은 순서로 호출을 표시합니다. rlang 함수는 `recover()`와 동일한 순서와 번호 매기기를 사용하지만, 호출 계층을 강조하기 위해 들여쓰기도 사용합니다.
+
+```{r, eval = FALSE, echo = FALSE}
+f("a")
+base::traceback()
+options(error = browser); f()
+options(error = recover); f()
+options(error = NULL)
+
+rlang::with_abort(f("a")); 
+rlang::last_trace()
+```
+
+### 컴파일된 코드 {#debug-compiled}
+
+\index{디버깅!C 코드}
+
+컴파일된 코드(C 또는 C++ 등)에도 대화형 디버거(gdb 또는 lldb)를 사용할 수 있습니다. 안타깝게도 이 주제는 이 책의 범위를 벗어나지만, 유용할 수 있는 몇 가지 리소스가 있습니다:
+
+-   <http://r-pkgs.had.co.nz/src.html#src-debugging>
+-   <https://github.com/wch/r-debug/blob/master/debugging-r.md>
+-   <http://kevinushey.github.io/blog/2015/04/05/debugging-with-valgrind/>
+-   <https://www.jimhester.com/2018/08/22/debugging-rstudio/>
+
+## 비대화형 디버깅 {#non-interactive-debugging}
+
+\index{디버깅!비대화형}
+
+디버깅이 가장 어려운 경우는 코드를 대화형으로 실행할 수 없을 때입니다. 보통 자동으로 실행되는 파이프라인의 일부이거나(다른 컴퓨터에서 실행될 수도 있음), 동일한 코드를 대화형으로 실행할 때는 오류가 발생하지 않는 경우입니다. 이는 매우 답답할 수 있습니다!
+
+이 섹션에서는 유용한 도구들을 소개하지만, 섹션 \@ref(debugging-strategy)의 전반적인 전략을 잊지 마세요. 대화형으로 탐색할 수 없을 때는 빠르게 반복할 수 있도록 문제를 최대한 작게 만드는 데 시간을 투자하는 것이 특히 중요합니다. 때로는 `callr::r(f, list(1, 2))`가 유용할 수 있습니다. 이 함수는 새 세션에서 `f(1, 2)`를 호출하여 문제를 재현하는 데 도움이 됩니다.
+
+다음과 같은 일반적인 문제도 확인해보세요:
+
+-   전역 환경이 다른가요? 다른 패키지를 로드했나요? 이전 세션에서 남겨진 객체가 차이를 일으키고 있나요?
+
+-   작업 디렉토리가 다른가요?
+
+-   `git` 같은 외부 명령의 위치를 결정하는 `PATH` 환경 변수가 다른가요?
+
+-   `library()`가 패키지를 찾는 위치를 결정하는 `R_LIBS` 환경 변수가 다른가요?
+
+### `dump.frames()`
+
+\indexc{dump.frames()}
+\indexc{recover()}
+
+`dump.frames()`는 비대화형 코드에서 `recover()`에 해당하는 함수입니다. 작업 디렉토리에 `last.dump.rda` 파일을 저장합니다. 나중에 대화형 세션에서 `load("last.dump.rda"); debugger()`로 `recover()`와 동일한 인터페이스를 가진 대화형 디버거를 시작할 수 있습니다. 이를 통해 비대화형으로 실행된 코드를 대화형으로 디버깅하는 "꼼수"를 쓸 수 있습니다.
+
+```{r, eval = FALSE}
+# 배치 R 프로세스에서 ----
+dump_and_quit <- function() {
+  # 디버깅 정보를 last.dump.rda 파일에 저장
+  dump.frames(to.file = TRUE)
+  # 오류 상태로 R 종료
+  q(status = 1)
+}
+options(error = dump_and_quit)
+
+# 이후 대화형 세션에서 ----
+load("last.dump.rda")
+debugger()
+```
+
+### 출력 디버깅 (Print debugging) {#print-debugging}
+
+\index{디버깅!출력으로}
+
+`dump.frames()`가 도움이 안 된다면, 좋은 대안은 \_\_출력 디버깅\_\_입니다. 문제의 위치를 정확히 파악하고 중요한 변수의 값을 확인하기 위해 수많은 출력 문을 삽입하는 방법입니다. 출력 디버깅은 느리고 원시적이지만 항상 작동하므로, 좋은 traceback을 얻을 수 없을 때 특히 유용합니다. 먼저 거친 단위의 마커를 삽입한 다음, 문제의 정확한 위치를 파악하면서 점점 더 세밀한 단위로 만들어 나가세요.
+
+```{r, error = TRUE}
+f <- function(a) {
+  cat("f()\n")
+  g(a)
+}
+g <- function(b) {
+  cat("g()\n")
+  cat("b =", b, "\n")
+  h(b)
+}
+h <- function(c) {
+  cat("i()\n")
+  i(c)
+}
+
+f(10)
+```
+
+출력 디버깅은 컴파일된 코드에 특히 유용합니다. 컴파일러가 코드를 상당히 수정하기 때문에 대화형 디버거 안에 있어도 근본 문제를 파악하기 어려운 경우가 드물지 않습니다.
+
+### RMarkdown
+
+\index{디버깅!RMarkdown}
+
+<!-- https://whattheyforgot.org/debugging-r-code.html#debugging-in-rmarkdown-documents 에서 발췌 -->
+
+RMarkdown 파일 내의 코드를 디버깅하려면 특별한 도구가 필요합니다. 먼저, RStudio를 사용하여 파일을 knit하는 경우 `rmarkdown::render("path/to/file.Rmd")`를 호출하는 방식으로 전환하세요. 이렇게 하면 현재 세션에서 코드가 실행되어 디버깅이 더 쉬워집니다. 이렇게 했을 때 문제가 사라진다면, 환경을 다르게 만드는 원인이 무엇인지 파악해야 합니다.
+
+문제가 지속된다면 대화형 디버깅 기술을 사용해야 합니다. 어떤 방법을 사용하든 추가 단계가 필요합니다: 오류 핸들러에서 `sink()`를 호출해야 합니다. 이는 knitr가 모든 출력을 캡처하는 데 사용하는 기본 sink를 제거하여 콘솔에서 결과를 볼 수 있게 합니다. 예를 들어, RMarkdown에서 `recover()`를 사용하려면 setup 블록에 다음 코드를 넣으세요:
+
+```{r, eval = FALSE}
+options(error = function() {
+  sink()
+  recover()
+})
+```
+
+knitr가 완료되면 "no sink to remove" 경고가 생성됩니다. 이 경고는 무시해도 됩니다.
+
+단순히 traceback을 원한다면, `rlang_trace_top_env` 옵션을 활용하여 `rlang::trace_back()`을 사용하는 것이 가장 쉬운 방법입니다. 이렇게 하면 RMarkdown과 knitr가 호출하는 모든 함수 대신 자신의 코드에서의 traceback만 볼 수 있습니다.
+
+```{r, eval = FALSE}
+options(rlang_trace_top_env = rlang::current_env())
+options(error = function() {
+  sink()
+  print(rlang::trace_back(bottom = sys.frame(-1)), simplify = "none")
+})
+```
+
+## 오류가 아닌 실패 {#non-error-failures}
+
+\index{디버깅!경고} \index{디버깅!메시지} \index{디버깅!충돌} \index{충돌|see {디버깅}}
+
+함수가 실패하는 방법에는 오류를 발생시키는 것 외에도 다른 방법들이 있습니다:
+
+-   함수가 예기치 않은 경고를 생성할 수 있습니다. 경고를 추적하는 가장 쉬운 방법은 `options(warn = 2)`로 경고를 오류로 변환하고 일반 디버깅 도구와 함께 호출 스택을 사용하는 것입니다. 이렇게 하면 `doWithOneRestart()`, `withOneRestart()`, `withRestarts()`, `.signalSimpleWarning()`과 같은 추가 호출이 나타납니다. 이들은 무시하세요: 경고를 오류로 전환하는 데 사용되는 내부 함수들입니다.
+
+-   함수가 예기치 않은 메시지를 생성할 수 있습니다. `rlang::with_abort()`를 사용하여 이러한 메시지를 오류로 전환할 수 있습니다:
+
+    ```{r, error = TRUE}
+    f <- function() g()
+    g <- function() message("안녕하세요!")
+    f()
+      
+    rlang::with_abort(f(), "message")
+    rlang::last_trace()
+    ```
+
+-   함수가 절대 반환하지 않을 수도 있습니다. 이는 자동으로 디버깅하기 특히 어렵지만, 함수를 종료하고 `traceback()`을 살펴보면 유익한 정보를 얻을 때도 있습니다. 그렇지 않으면 섹션 \@ref(print-debugging)처럼 출력 디버깅을 사용하세요.
+
+-   가장 최악의 시나리오는 코드가 R을 완전히 충돌시켜, 대화형으로 코드를 디버깅할 방법이 없어지는 것입니다. 이는 컴파일된 (C 또는 C++) 코드의 버그를 나타냅니다.
+
+    버그가 컴파일된 코드에 있다면, 섹션 \@ref(debug-compiled)의 링크를 따라 대화형 C 디버거 사용 방법을 배우거나(또는 많은 출력 문을 삽입해야 합니다).
+
+    버그가 패키지 또는 기본 R에 있다면, 패키지 관리자에게 연락해야 합니다. 어떤 경우든 개발자가 도움을 줄 수 있도록 가능한 한 작은 재현 가능한 예제를 만들기 위해 노력하세요 (섹션 \@ref(getting-help)).
