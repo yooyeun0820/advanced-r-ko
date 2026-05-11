@@ -6,11 +6,13 @@ website:
 
   navbar:
     left:
+      - href: index.qmd
+        text: Home
 
-      - href: Conditions_ko (1).qmd
+      - href: conditions_ko.qmd
         text: Conditions
 
-      - href: Debugging_ko.qmd
+      - href: debugging_ko.qmd
         text: Debugging
 
 format:
@@ -18,6 +20,3 @@ format:
     theme: cosmo
     toc: true
     toc-location: right
-    toc-depth: 3
-    number-sections: true
-    smooth-scroll: true
