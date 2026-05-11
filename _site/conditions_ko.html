@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>조건 – Advanced R Environments</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-dfb324f25d9b1687192fa8be62ac8f9c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "일치 없음",
+    "search-matching-documents-text": "일치된 문서",
+    "search-copy-link-title": "검색 링크 복사",
+    "search-hide-matches-text": "추가 검색 결과 숨기기",
+    "search-more-match-text": "추가 검색결과",
+    "search-more-matches-text": "추가 검색결과",
+    "search-clear-button-title": "제거",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "취소",
+    "search-submit-button-title": "검색",
+    "search-label": "검색"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Advanced R Environments</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="검색"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="탐색 전환" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./conditions_ko.html" aria-current="page"> 
+<span class="menu-text">Conditions</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./debugging_ko.html"> 
+<span class="menu-text">Debugging</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#소개" id="toc-소개" class="nav-link active" data-scroll-target="#소개"><span class="header-section-number">1</span> 소개</a>
+  <ul class="collapse">
+  <li><a href="#퀴즈" id="toc-퀴즈" class="nav-link" data-scroll-target="#퀴즈">퀴즈</a></li>
+  <li><a href="#개요" id="toc-개요" class="nav-link" data-scroll-target="#개요">개요</a></li>
+  <li><a href="#사전-준비" id="toc-사전-준비" class="nav-link" data-scroll-target="#사전-준비"><span class="header-section-number">1.1</span> 사전 준비</a></li>
+  </ul></li>
+  <li><a href="#signalling-conditions" id="toc-signalling-conditions" class="nav-link" data-scroll-target="#signalling-conditions"><span class="header-section-number">2</span> 조건 신호하기</a>
+  <ul class="collapse">
+  <li><a href="#오류" id="toc-오류" class="nav-link" data-scroll-target="#오류"><span class="header-section-number">2.1</span> 오류</a></li>
+  <li><a href="#경고" id="toc-경고" class="nav-link" data-scroll-target="#경고"><span class="header-section-number">2.2</span> 경고</a></li>
+  <li><a href="#메시지" id="toc-메시지" class="nav-link" data-scroll-target="#메시지"><span class="header-section-number">2.3</span> 메시지</a></li>
+  <li><a href="#연습문제" id="toc-연습문제" class="nav-link" data-scroll-target="#연습문제"><span class="header-section-number">2.4</span> 연습문제</a></li>
+  </ul></li>
+  <li><a href="#ignoring-conditions" id="toc-ignoring-conditions" class="nav-link" data-scroll-target="#ignoring-conditions"><span class="header-section-number">3</span> 조건 무시하기</a></li>
+  <li><a href="#handling-conditions" id="toc-handling-conditions" class="nav-link" data-scroll-target="#handling-conditions"><span class="header-section-number">4</span> 조건 처리하기</a>
+  <ul class="collapse">
+  <li><a href="#조건-객체" id="toc-조건-객체" class="nav-link" data-scroll-target="#조건-객체"><span class="header-section-number">4.1</span> 조건 객체</a></li>
+  <li><a href="#종료-핸들러" id="toc-종료-핸들러" class="nav-link" data-scroll-target="#종료-핸들러"><span class="header-section-number">4.2</span> 종료 핸들러</a></li>
+  <li><a href="#호출-핸들러" id="toc-호출-핸들러" class="nav-link" data-scroll-target="#호출-핸들러"><span class="header-section-number">4.3</span> 호출 핸들러</a></li>
+  <li><a href="#호출-스택" id="toc-호출-스택" class="nav-link" data-scroll-target="#호출-스택"><span class="header-section-number">4.4</span> 호출 스택</a></li>
+  <li><a href="#연습문제-1" id="toc-연습문제-1" class="nav-link" data-scroll-target="#연습문제-1"><span class="header-section-number">4.5</span> 연습문제</a></li>
+  </ul></li>
+  <li><a href="#custom-conditions" id="toc-custom-conditions" class="nav-link" data-scroll-target="#custom-conditions"><span class="header-section-number">5</span> 사용자 정의 조건</a>
+  <ul class="collapse">
+  <li><a href="#동기" id="toc-동기" class="nav-link" data-scroll-target="#동기"><span class="header-section-number">5.1</span> 동기</a></li>
+  <li><a href="#신호하기" id="toc-신호하기" class="nav-link" data-scroll-target="#신호하기"><span class="header-section-number">5.2</span> 신호하기</a></li>
+  <li><a href="#처리하기" id="toc-처리하기" class="nav-link" data-scroll-target="#처리하기"><span class="header-section-number">5.3</span> 처리하기</a></li>
+  <li><a href="#연습문제-2" id="toc-연습문제-2" class="nav-link" data-scroll-target="#연습문제-2"><span class="header-section-number">5.4</span> 연습문제</a></li>
+  </ul></li>
+  <li><a href="#condition-applications" id="toc-condition-applications" class="nav-link" data-scroll-target="#condition-applications"><span class="header-section-number">6</span> 응용</a>
+  <ul class="collapse">
+  <li><a href="#실패-값" id="toc-실패-값" class="nav-link" data-scroll-target="#실패-값"><span class="header-section-number">6.1</span> 실패 값</a></li>
+  <li><a href="#try-success-failure" id="toc-try-success-failure" class="nav-link" data-scroll-target="#try-success-failure"><span class="header-section-number">6.2</span> 성공 및 실패 값</a></li>
+  <li><a href="#재신호" id="toc-재신호" class="nav-link" data-scroll-target="#재신호"><span class="header-section-number">6.3</span> 재신호</a></li>
+  <li><a href="#기록" id="toc-기록" class="nav-link" data-scroll-target="#기록"><span class="header-section-number">6.4</span> 기록</a></li>
+  <li><a href="#기본-동작-없음" id="toc-기본-동작-없음" class="nav-link" data-scroll-target="#기본-동작-없음"><span class="header-section-number">6.5</span> 기본 동작 없음</a></li>
+  <li><a href="#연습문제-3" id="toc-연습문제-3" class="nav-link" data-scroll-target="#연습문제-3"><span class="header-section-number">6.6</span> 연습문제</a></li>
+  </ul></li>
+  <li><a href="#conditions-answers" id="toc-conditions-answers" class="nav-link" data-scroll-target="#conditions-answers"><span class="header-section-number">7</span> 퀴즈 정답</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">조건</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="소개" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="소개"><span class="header-section-number">1</span> 소개</h2>
+<p><strong>조건(condition)</strong> 시스템은 함수 작성자가 비정상적인 상황이 발생했음을 알릴 수 있도록 하고, 함수 사용자가 그에 대응할 수 있도록 하는 쌍을 이루는 도구들을 제공합니다. 함수 작성자는 <code>stop()</code>(오류), <code>warning()</code>(경고), <code>message()</code>(메시지) 같은 함수로 조건을 __신호(signal)__하고, 함수 사용자는 <code>tryCatch()</code>와 <code>withCallingHandlers()</code> 같은 함수로 이를 처리합니다. 조건 시스템을 이해하는 것은 중요한데, 두 가지 역할을 모두 맡아야 할 때가 많기 때문입니다: 직접 만든 함수에서 조건을 신호하는 역할과, 호출하는 함수에서 신호된 조건을 처리하는 역할입니다.</p>
+<p>R은 Common Lisp의 아이디어에 기반한 매우 강력한 조건 시스템을 제공합니다. R의 객체 지향 프로그래밍 방식과 마찬가지로, 현재 널리 사용되는 프로그래밍 언어들과는 꽤 다르기 때문에 오해하기 쉬우며, 이를 효과적으로 활용하는 방법에 대한 글도 상대적으로 많지 않습니다. 역사적으로 이 때문에 (저 자신을 포함해) 많은 사람들이 그 강력함을 충분히 활용하지 못했습니다. 이 장의 목표는 그러한 상황을 개선하는 것입니다. 여기서는 R 조건 시스템의 핵심 개념들을 배우는 동시에, 코드를 더 견고하게 만들어줄 실용적인 도구들도 함께 익힐 것입니다.</p>
+<p>이 장을 쓰면서 특히 유용하게 참고한 자료 두 가지가 있습니다. 시스템의 영감과 설계 동기에 대해 더 알고 싶다면 다음 자료들도 읽어보시기 바랍니다:</p>
+<ul>
+<li><p>Robert Gentleman과 Luke Tierney가 쓴 <a href="http://homepage.stat.uiowa.edu/~luke/R/exceptions/simpcond.html"><em>R을 위한 조건 시스템 프로토타입</em></a>. R 조건 시스템의 초기 버전을 설명합니다. 문서 작성 이후 구현이 다소 변경되었지만, 각 요소들이 어떻게 맞물리는지에 대한 좋은 개요와 설계 동기를 제공합니다.</p></li>
+<li><p>Peter Seibel이 쓴 <a href="http://www.gigamonkeys.com/book/beyond-exception-handling-conditions-and-restarts.html"><em>예외 처리를 넘어서: 조건과 재시작</em></a>. Lisp의 예외 처리를 설명하는데, R의 접근 방식과 매우 유사합니다. 유용한 동기 부여와 더 정교한 예제들을 제공합니다. 해당 장의 R 번역본은 <a href="http://adv-r.had.co.nz/beyond-exception-handling.html" class="uri">http://adv-r.had.co.nz/beyond-exception-handling.html</a>에서 확인할 수 있습니다.</p></li>
+</ul>
+<p>또한 이러한 아이디어들을 구현하는 기저 C 코드를 분석하는 것도 도움이 되었습니다. 모든 것이 어떻게 작동하는지 이해하고 싶다면 <a href="https://gist.github.com/hadley/4278d0a6d3a10e42533d59905fbed0ac">제 노트</a>가 유용할 것입니다.</p>
+<section id="퀴즈" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="퀴즈">퀴즈</h3>
+<p>이 장을 건너뛰고 싶으신가요? 아래 질문에 답할 수 있다면 그렇게 하세요. 정답은 @ref(conditions-answers) 절에 있습니다.</p>
+<ol type="1">
+<li><p>가장 중요한 세 가지 조건 유형은 무엇인가요?</p></li>
+<li><p>코드 블록에서 오류를 무시하려면 어떤 함수를 사용하나요?</p></li>
+<li><p><code>tryCatch()</code>와 <code>withCallingHandlers()</code>의 주요 차이점은 무엇인가요?</p></li>
+<li><p>사용자 정의 오류 객체를 만들고 싶을 때는 언제인가요?</p></li>
+</ol>
+</section>
+<section id="개요" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="개요">개요</h3>
+<ul>
+<li><p>@ref(signalling-conditions) 절에서는 조건을 신호하는 기본 도구들을 소개하고 각 유형을 언제 사용하는 것이 적절한지 논의합니다.</p></li>
+<li><p>@ref(ignoring-conditions) 절에서는 조건을 처리하는 가장 단순한 도구들을 가르칩니다: 조건을 삼켜서 최상위 레벨까지 도달하지 못하게 막는 <code>try()</code>와 <code>suppressMessages()</code> 같은 함수들입니다.</p></li>
+<li><p>@ref(handling-conditions) 절에서는 조건 __객체__와 조건 처리의 두 가지 기본 도구를 소개합니다: 오류 조건을 위한 <code>tryCatch()</code>와 그 외 모든 것을 위한 <code>withCallingHandlers()</code>입니다.</p></li>
+<li><p>@ref(custom-conditions) 절에서는 내장 조건 객체를 확장하여 조건 핸들러가 더 나은 판단을 내리는 데 활용할 수 있는 유용한 데이터를 저장하는 방법을 보여줍니다.</p></li>
+<li><p>@ref(condition-applications) 절에서는 앞 절에서 다룬 저수준 도구들을 기반으로 한 실용적인 응용 사례들을 모아서 장을 마무리합니다.</p></li>
+</ul>
+</section>
+<section id="사전-준비" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="사전-준비"><span class="header-section-number">1.1</span> 사전 준비</h3>
+<p>베이스 R 함수 외에도 이 장에서는 <a href="https://rlang.r-lib.org">rlang</a>의 조건 신호 및 처리 함수들을 사용합니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlang)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="signalling-conditions" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="signalling-conditions"><span class="header-section-number">2</span> 조건 신호하기</h2>
+<p> </p>
+<p>코드에서 신호할 수 있는 조건은 세 가지입니다: 오류, 경고, 메시지입니다.</p>
+<ul>
+<li><p>오류가 가장 심각합니다; 함수가 계속 실행될 방법이 없으며 실행이 중단되어야 함을 나타냅니다.</p></li>
+<li><p>경고는 오류와 메시지 사이 어딘가에 위치하며, 일반적으로 무언가 잘못되었지만 함수가 적어도 부분적으로는 복구할 수 있었음을 나타냅니다.</p></li>
+<li><p>메시지가 가장 mild합니다; 사용자를 대신하여 어떤 작업이 수행되었음을 알리는 방법입니다.</p></li>
+</ul>
+<p>인터랙티브하게만 생성될 수 있는 마지막 조건이 하나 있습니다: 인터럽트로, 사용자가 Escape, Ctrl + Break, 또는 Ctrl + C(플랫폼에 따라 다름)를 눌러 실행을 중단했음을 나타냅니다.</p>
+<p>조건은 보통 R 인터페이스에 따라 굵은 글씨나 빨간색으로 눈에 띄게 표시됩니다. 오류는 항상 “Error”로 시작하고, 경고는 “Warning” 또는 “Warning message”로 시작하며, 메시지는 아무것도 앞에 붙지 않기 때문에 구별할 수 있습니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stop</span>(<span class="st">"이것이 오류가 어떻게 보이는지입니다"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">warning</span>(<span class="st">"이것이 경고가 어떻게 보이는지입니다"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(<span class="st">"이것이 메시지가 어떻게 보이는지입니다"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>다음 세 절에서 오류, 경고, 메시지를 더 자세히 설명합니다.</p>
+<section id="오류" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="오류"><span class="header-section-number">2.1</span> 오류</h3>
+<p> </p>
+<p>베이스 R에서 오류는 <code>stop()</code>으로 신호되거나 <strong>던져집니다(thrown)</strong>:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">g</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">h</span>()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">stop</span>(<span class="st">"이것은 오류입니다!"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>기본적으로 오류 메시지에는 호출(call)이 포함되지만, 이는 일반적으로 유용하지 않으며(<code>traceback()</code>에서 쉽게 얻을 수 있는 정보를 반복할 뿐입니다), 그래서 <code>call. = FALSE</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>를 사용하는 것이 좋은 관행이라고 생각합니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">stop</span>(<span class="st">"이것은 오류입니다!"</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><code>stop()</code>에 해당하는 rlang 함수인 <code>rlang::abort()</code>는 이것을 자동으로 처리합니다. 이 장 전반에 걸쳐 <code>abort()</code>를 사용하겠지만, 그것의 가장 강력한 기능인 조건 객체에 추가 메타데이터를 더하는 기능은 장 후반부에서 다룹니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">abort</span>(<span class="st">"이것은 오류입니다!"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>(참고: <code>stop()</code>은 여러 입력을 이어 붙이지만, <code>abort()</code>는 그렇지 않습니다. abort로 복잡한 오류 메시지를 만들려면 <code>glue::glue()</code>를 사용하는 것을 권장합니다. 이렇게 하면 @ref(custom-conditions) 절에서 배울 유용한 기능들을 위해 <code>abort()</code>의 다른 인자들을 활용할 수 있습니다.)</p>
+<p>좋은 오류 메시지는 무엇이 잘못되었는지 알려주고 문제를 해결할 올바른 방향을 제시합니다. 좋은 오류 메시지를 작성하는 것은 어려운데, 오류는 보통 사용자가 함수에 대해 잘못된 멘탈 모델을 가지고 있을 때 발생하기 때문입니다. 개발자로서 사용자가 함수에 대해 어떻게 잘못 생각할 수 있는지 상상하기 어렵고, 따라서 사용자를 올바른 방향으로 안내할 메시지를 작성하기도 어렵습니다. 그럼에도 불구하고, tidyverse 스타일 가이드에서는 유용하다고 판단한 몇 가지 일반 원칙을 논의합니다: <a href="http://style.tidyverse.org/error-messages.html" class="uri">http://style.tidyverse.org/error-messages.html</a>.</p>
+</section>
+<section id="경고" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="경고"><span class="header-section-number">2.2</span> 경고</h3>
+<p></p>
+<p><code>warning()</code>으로 신호되는 경고는 오류보다 약합니다: 무언가 잘못되었지만 코드가 복구하고 계속 실행될 수 있었음을 나타냅니다. 오류와 달리, 하나의 함수 호출에서 여러 경고가 발생할 수 있습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fw <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"1</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"W1"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"2</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"W2"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"3</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"W3"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>기본적으로 경고는 캐시되었다가 제어가 최상위 레벨로 돌아올 때만 출력됩니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fw</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning messages:</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1: In f() : W1</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2: In f() : W2</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3: In f() : W3</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p> <code>warn</code> 옵션으로 이 동작을 제어할 수 있습니다:</p>
+<ul>
+<li><p>경고를 즉시 나타나게 하려면 <code>options(warn = 1)</code>로 설정하세요.</p></li>
+<li><p>경고를 오류로 전환하려면 <code>options(warn = 2)</code>로 설정하세요. 경고가 오류가 되면 <code>traceback()</code>과 같은 도구를 사용해 출처를 찾을 수 있기 때문에, 일반적으로 경고를 디버그하는 가장 쉬운 방법입니다.</p></li>
+<li><p><code>options(warn = 0)</code>으로 기본 동작을 복원하세요.</p></li>
+</ul>
+<p><code>stop()</code>과 마찬가지로 <code>warning()</code>에도 call 인자가 있습니다. 경고는 소스로부터 더 멀리 떨어져 있는 경우가 많아 약간 더 유용하지만, 저는 여전히 일반적으로 <code>call. = FALSE</code>로 억제합니다. <code>rlang::abort()</code>와 마찬가지로, <code>warning()</code>의 rlang 대응 함수인 <code>rlang::warn()</code>도 기본적으로 <code>call.</code>을 억제합니다.</p>
+<p>경고는 메시지(“이것을 알아야 합니다”)와 오류(“이것을 반드시 수정해야 합니다!”) 사이의 다소 도전적인 위치를 차지하며, 언제 사용해야 하는지에 대한 정확한 조언을 제시하기 어렵습니다. 일반적으로 절제하세요. 다른 출력이 많으면 경고를 놓치기 쉽고, 함수가 명백히 잘못된 입력에서 너무 쉽게 복구하는 것을 원하지 않기 때문입니다. 제 의견으로는 베이스 R은 경고를 과도하게 사용하는 경향이 있으며, 베이스 R의 많은 경고들은 오류로 처리하는 것이 더 나을 것입니다. 예를 들어, 다음과 같은 경고들은 오류로 처리하면 더 도움이 될 것이라고 생각합니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">formals</span>(<span class="dv">1</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">file.remove</span>(<span class="st">"this-file-doesn't-exist"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lag</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">k =</span> <span class="fl">1.5</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="fu">c</span>(<span class="st">"18"</span>, <span class="st">"30"</span>, <span class="st">"50+"</span>, <span class="st">"345,678"</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>경고 사용이 명확하게 적절한 경우는 두 가지 뿐입니다:</p>
+<ul>
+<li><p>함수를 __폐지(deprecate)__할 때 오래된 코드가 계속 작동할 수 있도록 허용하고 싶지만(그래서 경고를 무시해도 됨) 사용자에게 새로운 함수로 전환하도록 권장하고 싶을 때.</p></li>
+<li><p>문제에서 복구할 수 있다고 합리적으로 확신할 때: 문제를 100% 확실하게 해결할 수 있다면 어떤 메시지도 필요 없고; 문제를 올바르게 해결할 수 있는지 더 불확실하다면 오류를 던져야 합니다.</p></li>
+</ul>
+<p>그 외에는 경고를 신중하게 사용하고, 오류가 더 적절한지 신중하게 고려하세요.</p>
+</section>
+<section id="메시지" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="메시지"><span class="header-section-number">2.3</span> 메시지</h3>
+<p> </p>
+<p><code>message()</code>로 신호되는 메시지는 정보 제공용입니다; 사용자를 대신해 무언가를 수행했음을 알리는 데 사용하세요. 좋은 메시지는 균형을 잡는 행위입니다: 사용자가 무슨 일이 일어나고 있는지 알 수 있을 만큼 충분한 정보를 제공하되, 압도당할 정도로 많은 정보는 피해야 합니다.</p>
+<p><code>message()</code>는 즉시 표시되며 <code>call.</code> 인자가 없습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fm <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"1</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"M1"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"2</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"M2"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"3</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"M3"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">fm</span>()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>메시지를 사용하기 좋은 곳은:</p>
+<ul>
+<li><p>기본 인자에 비자명한 계산이 필요할 때 사용된 값을 사용자에게 알리고 싶을 때. 예를 들어, ggplot2는 <code>binwidth</code>를 지정하지 않으면 사용된 빈(bin)의 수를 보고합니다.</p></li>
+<li><p>주로 부수효과를 위해 호출되어 그렇지 않으면 조용할 함수에서. 예를 들어, 디스크에 파일을 쓰거나, 웹 API를 호출하거나, 데이터베이스에 쓸 때 무슨 일이 일어나고 있는지 사용자에게 알려주는 정기적인 상태 메시지를 제공하는 것이 유용합니다.</p></li>
+<li><p>중간 출력 없이 오래 실행되는 프로세스를 시작하려 할 때. 진행 표시줄(예: <a href="https://github.com/r-lib/progress">progress</a>)이 더 좋지만, 메시지도 좋은 시작점입니다.</p></li>
+<li><p>패키지를 작성할 때, 패키지가 로드될 때(즉, <code>.onAttach()</code>에서) 메시지를 표시하고 싶을 수 있습니다; 이 경우 반드시 <code>packageStartupMessage()</code>를 사용해야 합니다.</p></li>
+</ul>
+<p>일반적으로 메시지를 생성하는 함수는 <code>quiet = TRUE</code> 인자처럼 이를 억제할 방법이 있어야 합니다. 곧 배우겠지만 <code>suppressMessages()</code>로 모든 메시지를 억제하는 것도 가능하지만, 더 세밀한 제어도 제공하는 것이 좋습니다.</p>
+<p><code>message()</code>와 밀접하게 관련된 <code>cat()</code>을 비교하는 것이 중요합니다. 사용법과 결과 면에서 꽤 유사해 보입니다<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"안녕하세요!</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(<span class="st">"안녕하세요!"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>그러나 <code>cat()</code>과 <code>message()</code>의 _목적_은 다릅니다. <code>print()</code>나 <code>str()</code> 메서드처럼 함수의 주요 역할이 콘솔에 출력하는 것일 때 <code>cat()</code>을 사용하세요. 함수의 주요 목적이 다른 것일 때 콘솔에 출력하는 사이드 채널로는 <code>message()</code>를 사용하세요. 다시 말해, <code>cat()</code>은 사용자가 무언가를 출력하도록 <em>요청할 때</em> 사용하고 <code>message()</code>는 개발자가 무언가를 출력하기로 <em>선택할 때</em> 사용합니다.</p>
+</section>
+<section id="연습문제" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="연습문제"><span class="header-section-number">2.4</span> 연습문제</h3>
+<ol type="1">
+<li><p>삭제할 파일이 존재하지 않으면 오류를 던지는 <code>file.remove()</code> 래퍼를 작성하세요.</p></li>
+<li><p><code>message()</code>의 <code>appendLF</code> 인자는 무엇을 하나요? <code>cat()</code>과 어떻게 관련이 있나요?</p></li>
+</ol>
+</section>
+</section>
+<section id="ignoring-conditions" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="ignoring-conditions"><span class="header-section-number">3</span> 조건 무시하기</h2>
+<p> </p>
+<p>R에서 조건을 처리하는 가장 간단한 방법은 단순히 무시하는 것입니다:</p>
+<ul>
+<li><code>try()</code>로 오류를 무시하세요.</li>
+<li><code>suppressWarnings()</code>로 경고를 무시하세요.</li>
+<li><code>suppressMessages()</code>로 메시지를 무시하세요.</li>
+</ul>
+<p>이 함수들은 다소 강압적입니다. 알고 있는 특정 유형의 조건 하나만 억제하면서 다른 것들은 통과시킬 수 없기 때문입니다. 그 도전 과제는 이 장 후반부에서 다시 다룹니다.</p>
+<p><code>try()</code>는 오류가 발생한 후에도 실행이 계속될 수 있도록 합니다. 일반적으로 오류를 던지는 함수를 실행하면 즉시 종료되고 값을 반환하지 않습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>f1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(x)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">10</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">f1</span>(<span class="st">"x"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>그러나 오류를 생성하는 구문을 <code>try()</code>로 감싸면 오류 메시지가 표시되지만<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> 실행은 계속됩니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">try</span>(<span class="fu">log</span>(x))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">10</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">f2</span>(<span class="st">"a"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in log(x) : non-numeric argument to mathematical function</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 10</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><code>try()</code>의 결과를 저장하고 코드가 성공했는지 실패했는지에 따라 다른 작업을 수행하는 것은 가능하지만 권장되지 않습니다<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. 대신 <code>tryCatch()</code> 또는 더 높은 수준의 헬퍼를 사용하는 것이 더 좋습니다; 곧 배우게 됩니다.</p>
+<p>간단하지만 유용한 패턴은 호출 내에서 할당을 하는 것입니다: 이를 통해 코드가 성공하지 못할 경우 사용할 기본값을 정의할 수 있습니다. 인자가 함수 내부가 아닌 호출 환경에서 평가되기 때문에 이것이 작동합니다. (자세한 내용은 @ref(promises) 절을 참조하세요.)</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>default <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">try</span>(default <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"possibly-bad-input.csv"</span>), <span class="at">silent =</span> <span class="cn">TRUE</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><code>suppressWarnings()</code>와 <code>suppressMessages()</code>는 모든 경고와 메시지를 억제합니다. 오류와 달리 메시지와 경고는 실행을 종료하지 않으므로, 단일 블록에서 여러 경고와 메시지가 신호될 수 있습니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>({</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"이런!"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"또 다른 경고"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>({</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"안녕하세요"</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>({</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"저는 여전히 보입니다"</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="dv">3</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="handling-conditions" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="handling-conditions"><span class="header-section-number">4</span> 조건 처리하기</h2>
+<p> </p>
+<p>모든 조건에는 기본 동작이 있습니다: 오류는 실행을 중단하고 최상위 레벨로 돌아가며, 경고는 캡처되어 집계 표시되고, 메시지는 즉시 표시됩니다. 조건 __핸들러__를 사용하면 기본 동작을 일시적으로 재정의하거나 보완할 수 있습니다.</p>
+<p><code>tryCatch()</code>와 <code>withCallingHandlers()</code> 두 함수를 사용하면 핸들러를 등록할 수 있습니다. 핸들러는 신호된 조건을 유일한 인자로 받는 함수입니다. 등록 함수들은 같은 기본 형식을 가집니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 오류가 던져질 때 실행할 코드</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  핸들러가_활성화된_동안_실행할_코드</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">withCallingHandlers</span>(</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">warning =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 경고가 신호될 때 실행할 코드</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 메시지가 신호될 때 실행할 코드</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  핸들러가_활성화된_동안_실행할_코드</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>두 함수는 생성하는 핸들러의 유형에서 차이가 있습니다:</p>
+<ul>
+<li><p><code>tryCatch()</code>는 <strong>종료(exiting)</strong> 핸들러를 정의합니다; 조건이 처리된 후 제어는 <code>tryCatch()</code>가 호출된 컨텍스트로 돌아갑니다. 이로 인해 <code>tryCatch()</code>는 어차피 종료해야 하는 오류와 인터럽트를 처리하는 데 가장 적합합니다.</p></li>
+<li><p><code>withCallingHandlers()</code>는 <strong>호출(calling)</strong> 핸들러를 정의합니다; 조건이 캡처된 후 제어는 조건이 신호된 컨텍스트로 돌아갑니다. 이로 인해 비오류 조건을 처리하는 데 가장 적합합니다.</p></li>
+</ul>
+<p>그러나 이 핸들러들을 배우고 사용하기 전에 조건 __객체__에 대해 조금 이야기해야 합니다. 이것들은 조건을 신호할 때마다 암묵적으로 생성되지만, 핸들러 내부에서는 명시적으로 나타납니다.</p>
+<section id="조건-객체" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="조건-객체"><span class="header-section-number">4.1</span> 조건 객체</h3>
+<p> </p>
+<p>지금까지는 조건을 신호하기만 했고, 배후에서 생성되는 객체를 살펴보지 않았습니다. 조건 객체를 보는 가장 쉬운 방법은 신호된 조건에서 하나를 캐치하는 것입니다. 그것이 <code>rlang::catch_cnd()</code>의 역할입니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cnd <span class="ot">&lt;-</span> <span class="fu">catch_cnd</span>(<span class="fu">stop</span>(<span class="st">"오류 발생"</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cnd)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>내장 조건은 두 개의 요소를 가진 리스트입니다:</p>
+<ul>
+<li><p><code>message</code>, 사용자에게 표시할 텍스트를 포함하는 길이-1 문자 벡터. 메시지를 추출하려면 <code>conditionMessage(cnd)</code>를 사용하세요.</p></li>
+<li><p><code>call</code>, 조건을 발생시킨 호출. 위에서 설명한 대로 호출을 사용하지 않으므로 종종 <code>NULL</code>일 것입니다. 추출하려면 <code>conditionCall(cnd)</code>를 사용하세요.</p></li>
+</ul>
+<p>사용자 정의 조건에는 다른 구성 요소가 포함될 수 있으며, @ref(custom-conditions) 절에서 이에 대해 논의할 것입니다.</p>
+<p>조건에는 <code>class</code> 속성도 있어 S3 객체로 만듭니다. S3에 대해서는 @ref(s3) 장까지 논의하지 않겠지만, S3에 대해 모르더라도 조건 객체는 꽤 단순합니다. 가장 중요한 것은 <code>class</code> 속성이 문자 벡터이며, 어떤 핸들러가 조건에 매칭될지를 결정한다는 것입니다.</p>
+</section>
+<section id="종료-핸들러" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="종료-핸들러"><span class="header-section-number">4.2</span> 종료 핸들러</h3>
+<p></p>
+<p><code>tryCatch()</code>는 종료 핸들러를 등록하며, 일반적으로 오류 조건을 처리하는 데 사용됩니다. 기본 오류 동작을 재정의할 수 있습니다. 예를 들어, 다음 코드는 오류를 던지는 대신 <code>NA</code>를 반환합니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>f3 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(cnd) <span class="cn">NA</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log</span>(x)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">f3</span>(<span class="st">"x"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>조건이 신호되지 않거나, 신호된 조건의 클래스가 핸들러 이름과 일치하지 않으면 코드는 정상적으로 실행됩니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(cnd) <span class="dv">10</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(cnd) <span class="dv">10</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"안녕!"</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><code>tryCatch()</code>에 의해 설정된 핸들러는 <strong>종료</strong> 핸들러라고 불립니다. 조건이 신호되면 제어가 핸들러로 넘어가고 원래 코드로 돌아오지 않아 효과적으로 코드가 종료되기 때문입니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="st">"저기"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"여기"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"이 코드는 절대 실행되지 않습니다!"</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>보호된 코드는 <code>tryCatch()</code>의 환경에서 평가되지만, 핸들러 코드는 함수이기 때문에 그렇지 않습니다. 부모 환경에서 객체를 수정하려고 할 때 이를 기억하는 것이 중요합니다.</p>
+<p>핸들러 함수는 단일 인자, 즉 조건 객체와 함께 호출됩니다. 관례적으로 이 인자를 <code>cnd</code>라고 부릅니다. 이 값은 베이스 조건에서는 비교적 적은 데이터를 포함하기 때문에 약간만 유용합니다. 곧 보게 되겠지만, 사용자 정의 조건을 만들 때 더 유용합니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(<span class="st">"--"</span>, <span class="fu">conditionMessage</span>(cnd), <span class="st">"--"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">"이것은 오류입니다"</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><code>tryCatch()</code>에는 다른 인자가 하나 있습니다: <code>finally</code>. 초기 표현식이 성공하든 실패하든 관계없이 실행할 코드 블록(함수가 아님)을 지정합니다. 파일 삭제나 연결 닫기 같은 정리 작업에 유용할 수 있습니다. 이것은 기능적으로 <code>on.exit()</code>를 사용하는 것과 동등하며(실제로 그렇게 구현되어 있습니다), 전체 함수보다 작은 코드 청크를 감쌀 수 있습니다. </p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">writeLines</span>(<span class="st">"안녕!"</span>, path)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">finally =</span> {</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 항상 실행됨</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unlink</span>(path)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="호출-핸들러" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="호출-핸들러"><span class="header-section-number">4.3</span> 호출 핸들러</h3>
+<p> </p>
+<p><code>tryCatch()</code>에 의해 설정된 핸들러는 종료 핸들러라고 불립니다. 조건이 캐치된 후 코드가 종료되기 때문입니다. 반면에 <code>withCallingHandlers()</code>는 <strong>호출</strong> 핸들러를 설정합니다: 핸들러가 반환된 후 코드 실행은 정상적으로 계속됩니다. 이로 인해 <code>withCallingHandlers()</code>는 비오류 조건과 더 자연스럽게 쌍을 이루는 경향이 있습니다. 종료 핸들러와 호출 핸들러는 “핸들러”를 약간 다른 의미로 사용합니다:</p>
+<ul>
+<li><p>종료 핸들러는 문제를 처리하듯 신호를 처리합니다; 문제를 해결합니다.</p></li>
+<li><p>호출 핸들러는 자동차를 다루듯 신호를 처리합니다; 자동차는 여전히 존재합니다.</p></li>
+</ul>
+<p>아래 예제에서 <code>tryCatch()</code>와 <code>withCallingHandlers()</code>의 결과를 비교해보세요. 첫 번째 경우에는 종료 핸들러가 완료되면 코드가 종료되기 때문에 메시지가 출력되지 않습니다. 두 번째 경우에는 호출 핸들러가 종료되지 않기 때문에 출력됩니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">cat</span>(<span class="st">"메시지를 잡았습니다!</span><span class="sc">\n</span><span class="st">"</span>), </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"거기 누구 있나요?"</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"네, 있습니다!"</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="fu">withCallingHandlers</span>(</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">cat</span>(<span class="st">"메시지를 잡았습니다!</span><span class="sc">\n</span><span class="st">"</span>), </span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"거기 누구 있나요?"</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"네, 있습니다!"</span>)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>핸들러는 순서대로 적용되므로 무한 루프에 빠질 걱정을 할 필요가 없습니다. 다음 예제에서 핸들러가 신호하는 <code>message()</code>는 다시 잡히지 않습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">withCallingHandlers</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">message</span>(<span class="st">"두 번째 메시지"</span>),</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"첫 번째 메시지"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>(하지만 여러 핸들러가 있고 일부 핸들러가 다른 핸들러에 의해 캡처될 수 있는 조건을 신호한다면 순서를 신중하게 생각해야 합니다.)</p>
+<p>호출 핸들러의 반환 값은 무시됩니다. 핸들러가 완료된 후 코드가 계속 실행되기 때문입니다; 반환 값은 어디로 갈까요? 이는 호출 핸들러가 부수효과에만 유용하다는 것을 의미합니다.</p>
+<p> </p>
+<p>호출 핸들러에만 있는 중요한 부수효과 중 하나는 신호를 __억제(muffle)__하는 능력입니다. 기본적으로 조건은 기본 핸들러(또는 종료 핸들러가 제공된 경우)까지 부모 핸들러를 통해 계속 전파됩니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 메시지를 생성하는 기본 핸들러까지 버블업</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">withCallingHandlers</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">cat</span>(<span class="st">"레벨 2</span><span class="sc">\n</span><span class="st">"</span>),</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">withCallingHandlers</span>(</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">cat</span>(<span class="st">"레벨 1</span><span class="sc">\n</span><span class="st">"</span>),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"안녕"</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co"># tryCatch까지 버블업</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">cat</span>(<span class="st">"레벨 2</span><span class="sc">\n</span><span class="st">"</span>),</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">withCallingHandlers</span>(</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">cat</span>(<span class="st">"레벨 1</span><span class="sc">\n</span><span class="st">"</span>),</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"안녕"</span>)</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>조건이 “버블업”되는 것을 방지하면서 블록의 나머지 코드는 계속 실행하고 싶다면, <code>rlang::cnd_muffle()</code>로 명시적으로 억제해야 합니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 메시지를 출력하는 기본 핸들러를 억제</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">withCallingHandlers</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"레벨 2</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cnd_muffle</span>(cnd)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">withCallingHandlers</span>(</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">cat</span>(<span class="st">"레벨 1</span><span class="sc">\n</span><span class="st">"</span>),</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"안녕"</span>)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 레벨 2 핸들러와 기본 핸들러를 억제</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="fu">withCallingHandlers</span>(</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">cat</span>(<span class="st">"레벨 2</span><span class="sc">\n</span><span class="st">"</span>),</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">withCallingHandlers</span>(</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">message =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="st">"레벨 1</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cnd_muffle</span>(cnd)</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"안녕"</span>)</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="호출-스택" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="호출-스택"><span class="header-section-number">4.4</span> 호출 스택</h3>
+<p> </p>
+<p>절을 마무리하기 위해, 종료 핸들러와 호출 핸들러의 호출 스택 사이에 몇 가지 중요한 차이점이 있습니다. 이 차이점들은 일반적으로 중요하지 않지만, 가끔 유용하게 활용한 적이 있어 여기에 포함시킵니다!</p>
+<p><code>lobstr::cst()</code>를 사용하는 작은 예제를 설정하면 차이를 가장 쉽게 볼 수 있습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">g</span>()</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">h</span>()</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">message</span>(<span class="st">"!"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>호출 핸들러는 조건을 신호한 호출의 컨텍스트에서 호출됩니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">withCallingHandlers</span>(<span class="fu">f</span>(), <span class="at">message =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  lobstr<span class="sc">::</span><span class="fu">cst</span>()</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cnd_muffle</span>(cnd)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>반면 종료 핸들러는 <code>tryCatch()</code> 호출의 컨텍스트에서 호출됩니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(<span class="fu">f</span>(), <span class="at">message =</span> <span class="cf">function</span>(cnd) lobstr<span class="sc">::</span><span class="fu">cst</span>())</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="연습문제-1" class="level3" data-number="4.5">
+<h3 data-number="4.5" class="anchored" data-anchor-id="연습문제-1"><span class="header-section-number">4.5</span> 연습문제</h3>
+<ol type="1">
+<li><p><code>abort()</code>가 생성하는 조건이 <code>stop()</code>이 생성하는 조건에 비해 어떤 추가 정보를 포함하는지, 즉 이 두 객체의 차이점은 무엇인지 살펴보세요. 더 알아보려면 <code>?abort</code>의 도움말을 읽어보세요.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">catch_cnd</span>(<span class="fu">stop</span>(<span class="st">"오류 발생"</span>))</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">catch_cnd</span>(<span class="fu">abort</span>(<span class="st">"오류 발생"</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+<li><p>다음 코드 평가 결과를 예측하세요.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>show_condition <span class="ot">&lt;-</span> <span class="cf">function</span>(code) {</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(cnd) <span class="st">"error"</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">warning =</span> <span class="cf">function</span>(cnd) <span class="st">"warning"</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="st">"message"</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>      code</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>      <span class="cn">NULL</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="fu">show_condition</span>(<span class="fu">stop</span>(<span class="st">"!"</span>))</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="fu">show_condition</span>(<span class="dv">10</span>)</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="fu">show_condition</span>(<span class="fu">warning</span>(<span class="st">"?!"</span>))</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="fu">show_condition</span>({</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>  <span class="dv">10</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"?"</span>)</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"?!"</span>)</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+<li><p>이 코드 실행 결과를 설명하세요:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">withCallingHandlers</span>(</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">message</span>(<span class="st">"b"</span>),</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">withCallingHandlers</span>(</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">message =</span> <span class="cf">function</span>(cnd) <span class="fu">message</span>(<span class="st">"a"</span>),</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"c"</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+<li><p><code>catch_cnd()</code>의 소스 코드를 읽고 어떻게 작동하는지 설명하세요.</p></li>
+<li><p>단일 핸들러를 사용하여 <code>show_condition()</code>을 어떻게 재작성할 수 있을까요?</p></li>
+</ol>
+</section>
+</section>
+<section id="custom-conditions" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="custom-conditions"><span class="header-section-number">5</span> 사용자 정의 조건</h2>
+<p> </p>
+<p>R에서 오류 처리의 도전 과제 중 하나는 대부분의 함수가 <code>message</code>와 <code>call</code>만 포함하는 내장 조건 중 하나를 생성한다는 것입니다. 즉, 특정 유형의 오류를 감지하려면 오류 메시지의 텍스트로만 작업할 수 있습니다. 이는 오류가 발생하기 쉬운데, 메시지가 시간이 지남에 따라 변할 수 있을 뿐만 아니라, 메시지가 다른 언어로 번역될 수 있기 때문입니다.</p>
+<p>다행히 R에는 강력하지만 거의 사용되지 않는 기능이 있습니다: 추가 메타데이터를 포함하는 사용자 정의 조건을 만드는 기능입니다. 베이스 R에서 사용자 정의 조건을 만드는 것은 약간 번거롭지만, <code>rlang::abort()</code>를 사용하면 사용자 정의 <code>.subclass</code>와 추가 메타데이터를 제공할 수 있어 매우 쉽습니다.</p>
+<p>다음 예제는 기본 패턴을 보여줍니다. 사용자 정의 조건에는 다음과 같은 호출 구조를 사용하는 것을 권장합니다. 이것은 R의 유연한 인자 매칭을 활용하여 오류 유형의 이름이 먼저 오고, 사용자에게 표시되는 텍스트, 그 다음 사용자 정의 메타데이터가 오도록 합니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">abort</span>(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"error_not_found"</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="st">"경로 `blah.csv`를 찾을 수 없습니다"</span>, </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> <span class="st">"blah.csv"</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>사용자 정의 조건은 인터랙티브하게 사용할 때 일반 조건처럼 작동하지만, 핸들러가 훨씬 더 많은 것을 할 수 있도록 합니다.</p>
+<section id="동기" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="동기"><span class="header-section-number">5.1</span> 동기</h3>
+<p>이 아이디어들을 더 깊이 탐구하기 위해 <code>base::log()</code>를 살펴봅시다. 잘못된 인자로 인한 오류를 던질 때 최소한으로 처리합니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(letters)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">base =</span> letters)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>어떤 인자가 문제인지(<code>x</code> 또는 <code>base</code>) 명시하고, 문제가 되는 입력이 무엇인지(단순히 무엇이 아닌지만이 아니라) 말함으로써 더 나은 처리를 할 수 있다고 생각합니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>my_log <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">base =</span> <span class="fu">exp</span>(<span class="dv">1</span>)) {</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abort</span>(<span class="fu">paste0</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">"`x`는 숫자형 벡터여야 합니다; "</span>, <span class="fu">typeof</span>(x), <span class="st">"이(가) 아닙니다."</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(base)) {</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abort</span>(<span class="fu">paste0</span>(</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"`base`는 숫자형 벡터여야 합니다; "</span>, <span class="fu">typeof</span>(base), <span class="st">"이(가) 아닙니다."</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  base<span class="sc">::</span><span class="fu">log</span>(x, <span class="at">base =</span> base)</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>다음과 같은 결과를 얻을 수 있습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_log</span>(letters)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">my_log</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">base =</span> letters)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>오류 메시지가 사용자를 올바른 수정 방향으로 안내할 가능성이 높아 인터랙티브 사용에서는 개선되었습니다. 그러나 오류를 프로그래밍적으로 처리하려는 경우에는 개선되지 않습니다: 오류에 대한 모든 유용한 메타데이터가 단일 문자열에 끼워져 있기 때문입니다.</p>
+</section>
+<section id="신호하기" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="신호하기"><span class="header-section-number">5.2</span> 신호하기</h3>
+<p></p>
+<p>이 상황을 개선하기 위한 인프라를 구축해봅시다. 먼저 잘못된 인자에 대한 사용자 정의 <code>abort()</code> 함수를 제공하는 것으로 시작합니다. 이것은 현재 예제에서는 약간 과도하게 일반화되어 있지만, 다른 함수들에서 본 일반적인 패턴을 반영합니다. 패턴은 꽤 단순합니다. <code>glue::glue()</code>를 사용하여 사용자를 위한 좋은 오류 메시지를 만들고, 개발자를 위한 조건 호출에 메타데이터를 저장합니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>abort_bad_argument <span class="ot">&lt;-</span> <span class="cf">function</span>(arg, must, <span class="at">not =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  msg <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"`{arg}` must {must}"</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(not)) {</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    not <span class="ot">&lt;-</span> <span class="fu">typeof</span>(not)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    msg <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"{msg}; not {not}."</span>)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abort</span>(<span class="st">"error_bad_argument"</span>, </span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">message =</span> msg, </span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">arg =</span> arg, </span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">must =</span> must, </span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">not =</span> not</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div style="page-break-after: always;"></div>
+<div class="base">
+<p>rlang에 대한 의존성을 추가하지 않고 사용자 정의 오류를 던지고 싶다면, 조건 객체를 “직접” 만들고 <code>stop()</code>에 전달할 수 있습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>stop_custom <span class="ot">&lt;-</span> <span class="cf">function</span>(.subclass, message, <span class="at">call =</span> <span class="cn">NULL</span>, ...) {</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  err <span class="ot">&lt;-</span> <span class="fu">structure</span>(</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">message =</span> message,</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">call =</span> call,</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>      ...</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">class =</span> <span class="fu">c</span>(.subclass, <span class="st">"error"</span>, <span class="st">"condition"</span>)</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(err)</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>err <span class="ot">&lt;-</span> <span class="fu">catch_cnd</span>(</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop_custom</span>(<span class="st">"error_new"</span>, <span class="st">"이것은 사용자 정의 오류입니다"</span>, <span class="at">x =</span> <span class="dv">10</span>)</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(err)</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>err<span class="sc">$</span>x</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<p>이제 이 새로운 헬퍼를 사용하여 <code>my_log()</code>를 재작성할 수 있습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>my_log <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">base =</span> <span class="fu">exp</span>(<span class="dv">1</span>)) {</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abort_bad_argument</span>(<span class="st">"x"</span>, <span class="at">must =</span> <span class="st">"be numeric"</span>, <span class="at">not =</span> x)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(base)) {</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abort_bad_argument</span>(<span class="st">"base"</span>, <span class="at">must =</span> <span class="st">"be numeric"</span>, <span class="at">not =</span> base)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  base<span class="sc">::</span><span class="fu">log</span>(x, <span class="at">base =</span> base)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><code>my_log()</code> 자체는 그리 짧아지지 않았지만 약간 더 의미있게 되었으며, 잘못된 인자에 대한 오류 메시지가 함수 전반에 걸쳐 일관되도록 합니다. 이전과 같은 인터랙티브 오류 메시지를 제공합니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_log</span>(letters)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">my_log</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">base =</span> letters)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="처리하기" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="처리하기"><span class="header-section-number">5.3</span> 처리하기</h3>
+<p></p>
+<p>이러한 구조화된 조건 객체는 프로그래밍하기 훨씬 더 쉽습니다. 이 기능을 처음 사용하고 싶은 곳은 함수를 테스트할 때입니다. 단위 테스트는 이 책의 주제가 아니지만(<a href="http://r-pkgs.had.co.nz/">R 패키지</a> 참조), 기본 사항은 이해하기 쉽습니다. 다음 코드는 오류를 캡처하고, 기대하는 구조를 가지고 있는지 확인합니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(testthat)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>err <span class="ot">&lt;-</span> <span class="fu">catch_cnd</span>(<span class="fu">my_log</span>(<span class="st">"a"</span>))</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="fu">expect_s3_class</span>(err, <span class="st">"error_bad_argument"</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="fu">expect_equal</span>(err<span class="sc">$</span>arg, <span class="st">"x"</span>)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="fu">expect_equal</span>(err<span class="sc">$</span>not, <span class="st">"character"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>또한 <code>tryCatch()</code>에서 클래스(<code>error_bad_argument</code>)를 사용하여 특정 오류만 처리할 수 있습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">error_bad_argument =</span> <span class="cf">function</span>(cnd) <span class="st">"bad_argument"</span>,</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(cnd) <span class="st">"other error"</span>,</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_log</span>(<span class="st">"a"</span>)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><code>tryCatch()</code>를 여러 핸들러와 사용자 정의 클래스와 함께 사용할 때, 가장 잘 일치하는 것이 아닌 신호의 클래스 벡터의 어떤 클래스와도 일치하는 첫 번째 핸들러가 호출됩니다. 이 때문에 가장 구체적인 핸들러를 먼저 배치해야 합니다. 다음 코드는 기대한 대로 작동하지 않습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(cnd) <span class="st">"other error"</span>,</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">error_bad_argument =</span> <span class="cf">function</span>(cnd) <span class="st">"bad_argument"</span>,</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_log</span>(<span class="st">"a"</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="연습문제-2" class="level3" data-number="5.4">
+<h3 data-number="5.4" class="anchored" data-anchor-id="연습문제-2"><span class="header-section-number">5.4</span> 연습문제</h3>
+<ol type="1">
+<li><p>패키지 내에서 패키지를 사용하기 전에 설치되어 있는지 확인하는 것이 유용할 때가 있습니다. 패키지가 설치되어 있는지 확인하는 함수를 작성하고(<code>requireNamespace("pkg", quietly = FALSE)</code> 사용), 설치되어 있지 않으면 메타데이터에 패키지 이름이 포함된 사용자 정의 조건을 던지세요.</p></li>
+<li><p>패키지 내에서 무언가 잘못되었을 때 오류로 중단해야 하는 경우가 많습니다. 패키지에 의존하는 다른 패키지들이 단위 테스트에서 이러한 오류들을 확인하고 싶을 수도 있습니다. 이러한 패키지들이 API의 일부가 아닌 사용자 인터페이스의 일부이며 예고 없이 변경될 수 있는 오류 메시지에 의존하는 것을 어떻게 도울 수 있을까요?</p></li>
+</ol>
+</section>
+</section>
+<section id="condition-applications" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="condition-applications"><span class="header-section-number">6</span> 응용</h2>
+<p>이제 R 조건 시스템의 기본 도구들을 배웠으니, 몇 가지 응용 사례를 살펴볼 시간입니다. 이 절의 목표는 <code>tryCatch()</code>와 <code>withCallingHandlers()</code>의 모든 가능한 사용법을 보여주는 것이 아니라, 자주 나타나는 일반적인 패턴들을 설명하는 것입니다. 이것들이 창의적인 아이디어를 자극하여 새로운 문제를 만났을 때 유용한 해결책을 찾을 수 있기를 바랍니다.</p>
+<section id="실패-값" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="실패-값"><span class="header-section-number">6.1</span> 실패 값</h3>
+<p>오류 핸들러에서 값을 반환하는 것에 기반한 몇 가지 간단하지만 유용한 <code>tryCatch()</code> 패턴이 있습니다. 가장 간단한 경우는 오류가 발생하면 기본값을 반환하는 래퍼입니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>fail_with <span class="ot">&lt;-</span> <span class="cf">function</span>(expr, <span class="at">value =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(cnd) value,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    expr</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fail_with</span>(<span class="fu">log</span>(<span class="dv">10</span>), <span class="cn">NA_real_</span>)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="fu">fail_with</span>(<span class="fu">log</span>(<span class="st">"x"</span>), <span class="cn">NA_real_</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>더 정교한 응용은 <code>base::try()</code>입니다. 아래에서 <code>try2()</code>는 <code>base::try()</code>의 핵심을 추출합니다; 실제 함수는 오류 메시지를 <code>tryCatch()</code>가 사용되지 않은 것처럼 보이게 하기 위해 더 복잡합니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>try2 <span class="ot">&lt;-</span> <span class="cf">function</span>(expr, <span class="at">silent =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>      msg <span class="ot">&lt;-</span> <span class="fu">conditionMessage</span>(cnd)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span>silent) {</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">message</span>(<span class="st">"오류: "</span>, msg)</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">structure</span>(msg, <span class="at">class =</span> <span class="st">"try-error"</span>)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>    expr</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a><span class="fu">try2</span>(<span class="dv">1</span>)</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a><span class="fu">try2</span>(<span class="fu">stop</span>(<span class="st">"안녕"</span>))</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a><span class="fu">try2</span>(<span class="fu">stop</span>(<span class="st">"안녕"</span>), <span class="at">silent =</span> <span class="cn">TRUE</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="try-success-failure" class="level3" data-number="6.2">
+<h3 data-number="6.2" class="anchored" data-anchor-id="try-success-failure"><span class="header-section-number">6.2</span> 성공 및 실패 값</h3>
+<p>코드가 성공적으로 평가되면 하나의 값(<code>success_val</code>)을 반환하고, 실패하면 다른 값(<code>error_val</code>)을 반환하도록 이 패턴을 확장할 수 있습니다. 이 패턴에는 작은 트릭 하나만 필요합니다: 사용자가 제공한 코드를 평가한 다음 <code>success_val</code>을 평가합니다. 코드가 오류를 던지면 <code>success_val</code>에 도달하지 못하고 대신 <code>error_val</code>을 반환합니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">&lt;-</span> <span class="cf">function</span>(expr) {</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(cnd) error_val,</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>      expr</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>      success_val</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>이를 사용하여 표현식이 실패하는지 확인할 수 있습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>does_error <span class="ot">&lt;-</span> <span class="cf">function</span>(expr) {</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(cnd) <span class="cn">TRUE</span>,</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>      expr</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>      <span class="cn">FALSE</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>또는 <code>rlang::catch_cnd()</code>처럼 어떤 조건이든 캡처할 수 있습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>catch_cnd <span class="ot">&lt;-</span> <span class="cf">function</span>(expr) {</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">condition =</span> <span class="cf">function</span>(cnd) cnd, </span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>      expr</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>      <span class="cn">NULL</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>또한 이 패턴을 사용하여 <code>try()</code> 변형을 만들 수 있습니다. <code>try()</code>의 한 가지 도전 과제는 코드가 성공했는지 실패했는지 확인하는 것이 약간 어렵다는 것입니다. 특별한 클래스를 가진 객체를 반환하는 대신, <code>result</code>와 <code>error</code> 두 구성 요소를 가진 리스트를 반환하는 것이 약간 더 깔끔하다고 생각합니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>safety <span class="ot">&lt;-</span> <span class="cf">function</span>(expr) {</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">result =</span> <span class="cn">NULL</span>, <span class="at">error =</span> cnd)</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">result =</span> expr, <span class="at">error =</span> <span class="cn">NULL</span>)</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">safety</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">10</span>))</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">safety</span>(<span class="fu">stop</span>(<span class="st">"오류!"</span>)))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>(이것은 @ref(safely) 절에서 다시 돌아올 함수 연산자인 <code>purrr::safely()</code>와 밀접하게 관련됩니다.)</p>
+</section>
+<section id="재신호" class="level3" data-number="6.3">
+<h3 data-number="6.3" class="anchored" data-anchor-id="재신호"><span class="header-section-number">6.3</span> 재신호</h3>
+<p></p>
+<p>조건이 신호될 때 기본값을 반환하는 것 외에도, 핸들러를 사용하여 더 유익한 오류 메시지를 만들 수 있습니다. 하나의 간단한 응용은 단일 코드 블록에 대해 <code>options(warn = 2)</code>처럼 작동하는 함수를 만드는 것입니다. 아이디어는 간단합니다: 경고를 오류를 던짐으로써 처리합니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>warning2error <span class="ot">&lt;-</span> <span class="cf">function</span>(expr) {</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">withCallingHandlers</span>(</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">warning =</span> <span class="cf">function</span>(cnd) <span class="fu">abort</span>(<span class="fu">conditionMessage</span>(cnd)),</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    expr</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">warning2error</span>({</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">^</span> <span class="dv">4</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warn</span>(<span class="st">"안녕"</span>)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>성가신 메시지의 출처를 찾으려 한다면 비슷한 함수를 작성할 수 있습니다. 이에 대한 자세한 내용은 @ref(non-error-failures) 절에서 다룹니다.</p>
+</section>
+<section id="기록" class="level3" data-number="6.4">
+<h3 data-number="6.4" class="anchored" data-anchor-id="기록"><span class="header-section-number">6.4</span> 기록</h3>
+<p>또 다른 일반적인 패턴은 나중에 조사하기 위해 조건을 기록하는 것입니다. 여기서 새로운 도전 과제는 호출 핸들러가 부수효과를 위해서만 호출되기 때문에 값을 반환할 수 없고, 대신 어떤 객체를 제자리에서 수정해야 한다는 것입니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>catch_cnds <span class="ot">&lt;-</span> <span class="cf">function</span>(expr) {</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  conds <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  add_cond <span class="ot">&lt;-</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    conds <span class="ot">&lt;&lt;-</span> <span class="fu">append</span>(conds, <span class="fu">list</span>(cnd))</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cnd_muffle</span>(cnd)</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">withCallingHandlers</span>(</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">message =</span> add_cond,</span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">warning =</span> add_cond,</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>    expr</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>  conds</span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a><span class="fu">catch_cnds</span>({</span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inform</span>(<span class="st">"a"</span>)</span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warn</span>(<span class="st">"b"</span>)</span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inform</span>(<span class="st">"c"</span>)</span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>오류도 캡처하려면 어떻게 해야 할까요? <code>withCallingHandlers()</code>를 <code>tryCatch()</code>로 감싸야 합니다. 오류가 발생하면 마지막 조건이 됩니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>catch_cnds <span class="ot">&lt;-</span> <span class="cf">function</span>(expr) {</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  conds <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  add_cond <span class="ot">&lt;-</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    conds <span class="ot">&lt;&lt;-</span> <span class="fu">append</span>(conds, <span class="fu">list</span>(cnd))</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cnd_muffle</span>(cnd)</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>      conds <span class="ot">&lt;&lt;-</span> <span class="fu">append</span>(conds, <span class="fu">list</span>(cnd))</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">withCallingHandlers</span>(</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">message =</span> add_cond,</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">warning =</span> add_cond,</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>      expr</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>  conds</span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a><span class="fu">catch_cnds</span>({</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inform</span>(<span class="st">"a"</span>)</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warn</span>(<span class="st">"b"</span>)</span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abort</span>(<span class="st">"C"</span>)</span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>이것이 knitr를 구동하는 evaluate 패키지<span class="citation" data-cites="evaluate">[@evaluate]</span>의 핵심 아이디어입니다: 나중에 재생할 수 있도록 모든 출력을 특별한 데이터 구조에 캡처합니다. 전체적으로 evaluate 패키지는 여기 있는 코드보다 훨씬 복잡한데, 플롯과 텍스트 출력도 처리해야 하기 때문입니다.</p>
+</section>
+<section id="기본-동작-없음" class="level3" data-number="6.5">
+<h3 data-number="6.5" class="anchored" data-anchor-id="기본-동작-없음"><span class="header-section-number">6.5</span> 기본 동작 없음</h3>
+<p>마지막으로 유용한 패턴은 <code>message</code>, <code>warning</code> 또는 <code>error</code>에서 상속받지 않는 조건을 신호하는 것입니다. 기본 동작이 없기 때문에, 이는 사용자가 특별히 요청하지 않는 한 조건이 아무런 영향을 미치지 않음을 의미합니다. 예를 들어, 조건에 기반한 로깅 시스템을 상상할 수 있습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>log <span class="ot">&lt;-</span> <span class="cf">function</span>(message, <span class="at">level =</span> <span class="fu">c</span>(<span class="st">"info"</span>, <span class="st">"error"</span>, <span class="st">"fatal"</span>)) {</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  level <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(level)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">signal</span>(message, <span class="st">"log"</span>, <span class="at">level =</span> level)</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><code>log()</code>를 호출하면 조건이 신호되지만, 기본 핸들러가 없기 때문에 아무 일도 일어나지 않습니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(<span class="st">"이 코드가 실행되었습니다"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>로깅을 활성화하려면 <code>log</code> 조건으로 무언가를 하는 핸들러가 필요합니다. 아래에서는 모든 로깅 메시지를 파일에 기록하는 <code>record_log()</code> 함수를 정의합니다:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>record_log <span class="ot">&lt;-</span> <span class="cf">function</span>(expr, <span class="at">path =</span> <span class="fu">stdout</span>()) {</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">withCallingHandlers</span>(</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">log =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"["</span>, cnd<span class="sc">$</span>level, <span class="st">"] "</span>, cnd<span class="sc">$</span>message, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="at">sep =</span> <span class="st">""</span>,</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">file =</span> path, <span class="at">append =</span> <span class="cn">TRUE</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>    expr</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a><span class="fu">record_log</span>(<span class="fu">log</span>(<span class="st">"안녕"</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>일부 로깅 레벨을 선택적으로 억제하는 또 다른 함수와 레이어링하는 것도 상상할 수 있습니다.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>ignore_log_levels <span class="ot">&lt;-</span> <span class="cf">function</span>(expr, levels) {</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">withCallingHandlers</span>(</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">log =</span> <span class="cf">function</span>(cnd) {</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (cnd<span class="sc">$</span>level <span class="sc">%in%</span> levels) {</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cnd_muffle</span>(cnd)</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>    expr</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a><span class="fu">record_log</span>(<span class="fu">ignore_log_levels</span>(<span class="fu">log</span>(<span class="st">"안녕"</span>), <span class="st">"info"</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="base">
+<p>조건 객체를 직접 만들고 <code>signalCondition()</code>으로 신호하는 경우, <code>cnd_muffle()</code>은 작동하지 않습니다. 대신 다음과 같이 muffle 재시작을 정의하여 호출해야 합니다:</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">withRestarts</span>(<span class="fu">signalCondition</span>(cond), <span class="at">muffle =</span> <span class="cf">function</span>() <span class="cn">NULL</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>재시작은 현재 이 책의 범위를 벗어나지만, 3판에 포함될 것으로 예상합니다.</p>
+</div>
+</section>
+<section id="연습문제-3" class="level3" data-number="6.6">
+<h3 data-number="6.6" class="anchored" data-anchor-id="연습문제-3"><span class="header-section-number">6.6</span> 연습문제</h3>
+<ol type="1">
+<li><p>모든 것을 억제하는 <code>suppressConditions()</code>를 <code>suppressMessages()</code>와 <code>suppressWarnings()</code>처럼 작동하도록 만드세요. 오류를 어떻게 처리해야 할지 신중하게 생각해보세요.</p></li>
+<li><p>다음 두 가지 <code>message2error()</code> 구현을 비교해보세요. 이 시나리오에서 <code>withCallingHandlers()</code>의 주요 장점은 무엇인가요? (힌트: traceback를 자세히 살펴보세요.)</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>message2error <span class="ot">&lt;-</span> <span class="cf">function</span>(code) {</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">withCallingHandlers</span>(code, <span class="at">message =</span> <span class="cf">function</span>(e) <span class="fu">stop</span>(e))</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>message2error <span class="ot">&lt;-</span> <span class="cf">function</span>(code) {</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(code, <span class="at">message =</span> <span class="cf">function</span>(e) <span class="fu">stop</span>(e))</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+<li><p>경고와 메시지의 원래 혼합을 재현하고 싶다면 <code>catch_cnds()</code> 정의를 어떻게 수정하겠습니까?</p></li>
+<li><p>인터럽트를 잡는 것이 왜 위험한지, 이 코드를 실행해서 확인해보세요.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>코드</summary>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>bottles_of_beer <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">i =</span> <span class="dv">99</span>) {</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"벽에 "</span>, i, <span class="st">"병의 맥주가 있습니다, "</span>, </span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    i, <span class="st">"병의 맥주."</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(i <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tryCatch</span>(</span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">Sys.sleep</span>(<span class="dv">1</span>),</span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">interrupt =</span> <span class="cf">function</span>(err) {</span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>        i <span class="ot">&lt;&lt;-</span> i <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (i <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>          <span class="fu">message</span>(</span>
+<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"하나를 내리고 돌려서, "</span>, i, </span>
+<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">" 병"</span>, <span class="cf">if</span> (i <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="st">"들"</span>, <span class="st">"의 맥주가 벽에 있습니다."</span></span>
+<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a>          )</span>
+<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb59-19"><a href="#cb59-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb59-20"><a href="#cb59-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(</span>
+<span id="cb59-21"><a href="#cb59-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"벽에 맥주가 더 이상 없습니다, "</span>, </span>
+<span id="cb59-22"><a href="#cb59-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"맥주가 더 이상 없습니다."</span></span>
+<span id="cb59-23"><a href="#cb59-23" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb59-24"><a href="#cb59-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+</ol>
+</section>
+</section>
+<section id="conditions-answers" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="conditions-answers"><span class="header-section-number">7</span> 퀴즈 정답</h2>
+<ol type="1">
+<li><p><code>error</code>, <code>warning</code>, <code>message</code>.</p></li>
+<li><p><code>try()</code> 또는 <code>tryCatch()</code>를 사용할 수 있습니다.</p></li>
+<li><p><code>tryCatch()</code>는 종료 핸들러를 생성하여 감싸진 코드의 실행을 종료시킵니다; <code>withCallingHandlers()</code>는 호출 핸들러를 생성하여 감싸진 코드의 실행에 영향을 주지 않습니다.</p></li>
+<li><p><code>tryCatch()</code>로 특정 유형의 오류를 캡처할 수 있기 때문입니다. 특히 메시지가 번역될 수 있는 경우 위험한 오류 문자열 비교에 의존하는 대신에 말입니다.</p></li>
+</ol>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">각주</h2>
+
+<ol>
+<li id="fn1"><p><code>call.</code>의 뒤에 붙는 <code>.</code>는 <code>stop()</code>의 특이한 점입니다; 특별한 의미를 부여하지 않아도 됩니다.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>단, <code>cat()</code>은 새 줄을 출력하려면 명시적으로 뒤에 <code>"\n"</code>이 필요합니다.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><code>try(..., silent = TRUE)</code>로 메시지를 억제할 수 있습니다.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>표현식이 실패했는지는 결과의 클래스가 <code>try-error</code>인지로 알 수 있습니다.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "복사완료!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "복사완료!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
